@@ -22,6 +22,7 @@ const FinanceDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTx, setEditingTx] = useState(null);
     const [defaultModalType, setDefaultModalType] = useState('expense');
+    const [hideModalTypeSelector, setHideModalTypeSelector] = useState(false);
 
     const [isMonthlyModalOpen, setIsMonthlyModalOpen] = useState(false);
     const [editingMonthlyExpense, setEditingMonthlyExpense] = useState(null);
@@ -49,9 +50,10 @@ const FinanceDashboard = () => {
         return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
     }
 
-    const handleOpenModal = (tx = null, defaultType = 'expense') => {
+    const handleOpenModal = (tx = null, defaultType = 'expense', hideTypeSelector = false) => {
         setEditingTx(tx);
         setDefaultModalType(defaultType);
+        setHideModalTypeSelector(hideTypeSelector);
         setIsModalOpen(true);
     };
 
@@ -225,7 +227,7 @@ const FinanceDashboard = () => {
                         <div className="savings-history" style={{ marginTop: '16px', marginBottom: '16px' }}>
                             <div className="transactions-list" style={{ gap: '8px' }}>
                                 {transactions.filter(t => t.type === 'savings').slice(0, 3).map((tx) => (
-                                    <div key={tx.id} className="transaction-item" onClick={() => handleOpenModal(tx, 'savings')} style={{ cursor: 'pointer', padding: '4px 0' }}>
+                                    <div key={tx.id} className="transaction-item" onClick={() => handleOpenModal(tx, 'savings', true)} style={{ cursor: 'pointer', padding: '4px 0' }}>
                                         <div className="tx-details">
                                             <div className="tx-name" style={{ fontSize: '0.85rem' }}>{tx.name}</div>
                                             <div className="tx-category" style={{ fontSize: '0.65rem' }}>{new Date(tx.date).toLocaleDateString()}</div>
@@ -239,8 +241,8 @@ const FinanceDashboard = () => {
                         </div>
 
                         <div className="savings-actions" style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
-                            <button className="explore-btn" style={{ flex: 1, padding: '12px 8px', fontSize: '0.85rem' }} onClick={() => handleOpenModal(null, 'savings')}>Deposit</button>
-                            <button className="explore-btn" style={{ flex: 1, padding: '12px 8px', fontSize: '0.85rem', background: 'rgba(229, 62, 62, 0.1)', color: '#E53E3E' }} onClick={() => handleOpenModal(null, 'savings')}>Withdraw</button>
+                            <button className="explore-btn" style={{ flex: 1, padding: '12px 8px', fontSize: '0.85rem' }} onClick={() => handleOpenModal(null, 'savings', true)}>Deposit</button>
+                            <button className="explore-btn" style={{ flex: 1, padding: '12px 8px', fontSize: '0.85rem', background: 'rgba(229, 62, 62, 0.1)', color: '#E53E3E' }} onClick={() => handleOpenModal(null, 'savings', true)}>Withdraw</button>
                         </div>
                     </div>
 
@@ -252,6 +254,7 @@ const FinanceDashboard = () => {
                     onClose={() => setIsModalOpen(false)}
                     transactionToEdit={editingTx}
                     defaultType={defaultModalType}
+                    hideTypeSelector={hideModalTypeSelector}
                 />
             )}
 

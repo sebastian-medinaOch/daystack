@@ -4,7 +4,7 @@ import { FinanceContext } from '../context/FinanceContext';
 import { X } from 'lucide-react';
 import './FinanceTransactionModal.css';
 
-const FinanceTransactionModal = ({ onClose, transactionToEdit, defaultType = 'expense' }) => {
+const FinanceTransactionModal = ({ onClose, transactionToEdit, defaultType = 'expense', hideTypeSelector = false }) => {
     const { addTransaction, updateTransaction } = useContext(FinanceContext);
 
     const [formData, setFormData] = useState({
@@ -75,29 +75,31 @@ const FinanceTransactionModal = ({ onClose, transactionToEdit, defaultType = 'ex
                 <h2>{transactionToEdit ? 'Edit Transaction' : 'New Transaction'}</h2>
 
                 <form onSubmit={handleSubmit} className="finance-form">
-                    <div className="form-group type-selector">
-                        <button
-                            type="button"
-                            className={`type-btn ${formData.type === 'expense' ? 'active expense' : ''}`}
-                            onClick={() => setFormData(prev => ({ ...prev, type: 'expense' }))}
-                        >
-                            Expense
-                        </button>
-                        <button
-                            type="button"
-                            className={`type-btn ${formData.type === 'income' ? 'active income' : ''}`}
-                            onClick={() => setFormData(prev => ({ ...prev, type: 'income' }))}
-                        >
-                            Income
-                        </button>
-                        <button
-                            type="button"
-                            className={`type-btn ${formData.type === 'savings' ? 'active savings' : ''}`}
-                            onClick={() => setFormData(prev => ({ ...prev, type: 'savings' }))}
-                        >
-                            Savings
-                        </button>
-                    </div>
+                    {!hideTypeSelector && (
+                        <div className="form-group type-selector">
+                            <button
+                                type="button"
+                                className={`type-btn ${formData.type === 'expense' ? 'active expense' : ''}`}
+                                onClick={() => setFormData(prev => ({ ...prev, type: 'expense' }))}
+                            >
+                                Expense
+                            </button>
+                            <button
+                                type="button"
+                                className={`type-btn ${formData.type === 'income' ? 'active income' : ''}`}
+                                onClick={() => setFormData(prev => ({ ...prev, type: 'income' }))}
+                            >
+                                Income
+                            </button>
+                            <button
+                                type="button"
+                                className={`type-btn ${formData.type === 'savings' ? 'active savings' : ''}`}
+                                onClick={() => setFormData(prev => ({ ...prev, type: 'savings' }))}
+                            >
+                                Savings
+                            </button>
+                        </div>
+                    )}
 
                     {formData.type === 'savings' && (
                         <div className="form-group action-selector" style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
