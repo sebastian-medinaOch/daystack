@@ -1,23 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Lexend+Exa:wght@700&display=swap');
 
 :root {
   /* Dynamic Hue for customization */
-  --primary-hue: 255;
+  --primary-hue: 45;
 
-  /* Color Palette - Premium Dark Theme */
-  --bg-main: #0B0B10;
-  --bg-panel: #14141A;
-  --bg-card: #1C1C24;
-  --bg-card-hover: #252530;
+  /* Color Palette - Premium Brand Theme */
+  --bg-main: #000000;
+  --bg-panel: #111111;
+  --bg-card: #1A1A1A;
+  --bg-card-hover: #262626;
 
   --text-primary: #FFFFFF;
-  --text-secondary: #94A3B8;
-  --text-tertiary: #64748B;
+  --text-secondary: #D1D5DB;
+  --text-tertiary: #6F737B;
 
-  --primary: #8B5CF6;
-  /* Violet */
-  --primary-hover: #7C3AED;
-  --primary-transparent: rgba(139, 92, 246, 0.15);
+  --primary: #EFB810;
+  --primary-hover: #DCA80C;
+  --primary-transparent: rgba(239, 184, 16, 0.15);
 
   --accent-work: hsl(210, 85%, 55%);
   --accent-personal: hsl(150, 75%, 45%);
@@ -28,11 +27,12 @@
   --warning: hsl(35, 90%, 55%);
 
   /* Borders and Dividers */
-  --border-light: hsl(240, 8%, 25%);
+  --border-light: #333333;
   --border-focus: var(--primary);
 
   /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-family: 'Lexend', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: 'Lexend Exa', var(--font-family);
 
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
@@ -65,6 +65,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
 }
 
 a {

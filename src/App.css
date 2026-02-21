@@ -30,16 +30,16 @@
 .logo-icon {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--primary), #D946EF);
+  background: linear-gradient(135deg, var(--primary), #DCA80C);
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 4px 12px rgba(239, 184, 16, 0.4);
 }
 
 .logo h2 {
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(to right, #FFFFFF, #CBD5E1);
+  background: linear-gradient(to right, #FFFFFF, var(--text-secondary));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -135,7 +135,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 40px;
-  background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.03), transparent 400px);
+  background: radial-gradient(circle at top right, rgba(239, 184, 16, 0.05), transparent 400px);
 }
 
 .page-content {
