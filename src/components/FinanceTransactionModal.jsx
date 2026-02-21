@@ -16,6 +16,8 @@ const FinanceTransactionModal = ({ onClose, transactionToEdit, defaultType = 'ex
         date: new Date().toISOString().split('T')[0],
     });
 
+    const [savingsAction, setSavingsAction] = useState('deposit'); // 'deposit' | 'withdraw'
+
     useEffect(() => {
         if (transactionToEdit) {
             setFormData({
@@ -26,6 +28,9 @@ const FinanceTransactionModal = ({ onClose, transactionToEdit, defaultType = 'ex
                 category: transactionToEdit.category || '',
                 date: new Date(transactionToEdit.date).toISOString().split('T')[0],
             });
+            if (transactionToEdit.type === 'savings') {
+                setSavingsAction(transactionToEdit.amount < 0 ? 'withdraw' : 'deposit');
+            }
         }
     }, [transactionToEdit]);
 
@@ -37,15 +42,14 @@ const FinanceTransactionModal = ({ onClose, transactionToEdit, defaultType = 'ex
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Convert amount to negative if it's an expense
+        // Convert amount to negative if it's an expense or a savings withdrawal
         let finalAmount = parseFloat(formData.amount);
         if (formData.type === 'expense') {
             finalAmount = -Math.abs(finalAmount);
         } else if (formData.type === 'income') {
             finalAmount = Math.abs(finalAmount);
         } else if (formData.type === 'savings') {
-            // Savings are positive balance transfers typically, but let's keep them positive for tracking
-            finalAmount = Math.abs(finalAmount);
+            finalAmount = savingsAction === 'withdraw' ? -Math.abs(finalAmount) : Math.abs(finalAmount);
         }
 
         const transactionData = {
@@ -94,6 +98,37 @@ const FinanceTransactionModal = ({ onClose, transactionToEdit, defaultType = 'ex
                             Savings
                         </button>
                     </div>
+
+                    {formData.type === 'savings' && (
+                        <div className="form-group action-selector" style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                            <button
+                                type="button"
+                                className={`action-btn ${savingsAction === 'deposit' ? 'active deposit' : ''}`}
+                                onClick={() => setSavingsAction('deposit')}
+                                style={{
+                                    flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid var(--border-light)',
+                                    background: savingsAction === 'deposit' ? 'rgba(56, 161, 105, 0.1)' : 'transparent',
+                                    color: savingsAction === 'deposit' ? 'var(--success)' : 'var(--text-secondary)',
+                                    fontWeight: savingsAction === 'deposit' ? '600' : '500', cursor: 'pointer'
+                                }}
+                            >
+                                Deposit
+                            </button>
+                            <button
+                                type="button"
+                                className={`action-btn ${savingsAction === 'withdraw' ? 'active withdraw' : ''}`}
+                                onClick={() => setSavingsAction('withdraw')}
+                                style={{
+                                    flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid var(--border-light)',
+                                    background: savingsAction === 'withdraw' ? 'rgba(229, 62, 62, 0.1)' : 'transparent',
+                                    color: savingsAction === 'withdraw' ? '#E53E3E' : 'var(--text-secondary)',
+                                    fontWeight: savingsAction === 'withdraw' ? '600' : '500', cursor: 'pointer'
+                                }}
+                            >
+                                Withdraw
+                            </button>
+                        </div>
+                    )}
 
                     <div className="form-row">
                         <div className="form-group flex-2">

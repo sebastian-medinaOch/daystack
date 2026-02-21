@@ -47,36 +47,58 @@ function App() {
         <div className="app-container">
 
           {/* Sidebar Component */}
-          <aside className={`sidebar glass-panel ${isSidebarOpen ? 'open' : ''}`}>
+          <aside className={`sidebar premium-sidebar ${isSidebarOpen ? 'open' : ''}`}>
             <div className="sidebar-header">
-              <div className="logo">
-                <div className="logo-icon"></div>
-                <h2>DayStack</h2>
+              <div className="logo-icon-premium">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="white" />
+                </svg>
               </div>
             </div>
 
             <nav className="sidebar-nav">
               <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} onClick={() => setIsSidebarOpen(false)}>
-                <LayoutDashboard size={20} />
+                <div className="nav-icon-container">
+                  <LayoutDashboard size={22} strokeWidth={1.5} />
+                </div>
                 <span>Dashboard</span>
               </NavLink>
               <NavLink to="/tasks" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} onClick={() => setIsSidebarOpen(false)}>
-                <CheckSquare size={20} />
+                <div className="nav-icon-container">
+                  <CheckSquare size={22} strokeWidth={1.5} />
+                </div>
                 <span>Tasks</span>
               </NavLink>
               <NavLink to="/projects" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} onClick={() => setIsSidebarOpen(false)}>
-                <FolderKanban size={20} />
+                <div className="nav-icon-container">
+                  <FolderKanban size={22} strokeWidth={1.5} />
+                </div>
                 <span>Projects</span>
               </NavLink>
               <NavLink to="/time" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} onClick={() => setIsSidebarOpen(false)}>
-                <Clock size={20} />
+                <div className="nav-icon-container">
+                  <Clock size={22} strokeWidth={1.5} />
+                </div>
                 <span>Time Tracking</span>
               </NavLink>
               <NavLink to="/finances" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} onClick={() => setIsSidebarOpen(false)}>
-                <Wallet size={20} />
+                <div className="nav-icon-container">
+                  <Wallet size={22} strokeWidth={1.5} />
+                </div>
                 <span>Finances</span>
               </NavLink>
             </nav>
+
+            <div className="sidebar-bottom">
+              <div className="profile-widget">
+                <div className="profile-menu-dots">
+                  <span>...</span>
+                </div>
+                <div className="profile-avatar">
+                  <img src="https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?q=80&w=150&auto=format&fit=crop" alt="User Profile" />
+                </div>
+              </div>
+            </div>
           </aside>
 
           {/* Main Content Area */}

@@ -85,7 +85,9 @@ export const FinanceProvider = ({ children }) => {
     };
 
     const calculateTotalBalance = () => {
-        return transactions.reduce((acc, current) => acc + current.amount, 0);
+        return transactions
+            .filter(t => t.type !== 'savings')
+            .reduce((acc, current) => acc + current.amount, 0);
     };
 
     const getExpenses = () => transactions.filter(t => t.type === 'expense');
@@ -93,7 +95,7 @@ export const FinanceProvider = ({ children }) => {
     const getSavings = () => transactions.filter(t => t.type === 'savings');
 
     const calculateTotalExpenses = () => getExpenses().reduce((acc, curr) => acc + curr.amount, 0);
-    const calculateTotalSavings = () => getSavings().reduce((acc, curr) => acc + Math.abs(curr.amount), 0);
+    const calculateTotalSavings = () => getSavings().reduce((acc, curr) => acc + curr.amount, 0);
     const calculateTotalIncome = () => getIncome().reduce((acc, curr) => acc + curr.amount, 0);
 
     // --- Monthly Expected Expenses (Panel / Tabla Mensual) ---

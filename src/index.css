@@ -4,11 +4,12 @@
   /* Dynamic Hue for customization */
   --primary-hue: 45;
 
-  /* Color Palette - Premium Brand Theme */
-  --bg-main: #000000;
-  --bg-panel: #111111;
-  --bg-card: #1A1A1A;
-  --bg-card-hover: #262626;
+  /* Color Palette - Dark Theme */
+  --bg-main: #1A1D21;
+  /* Dark Gray */
+  --bg-panel: #000000;
+  --bg-card: #000000;
+  --bg-card-hover: #111111;
 
   --text-primary: #FFFFFF;
   --text-secondary: #D1D5DB;
@@ -16,18 +17,18 @@
 
   --primary: #EFB810;
   --primary-hover: #DCA80C;
-  --primary-transparent: rgba(239, 184, 16, 0.15);
+  --primary-transparent: rgba(239, 184, 16, 0.2);
 
-  --accent-work: hsl(210, 85%, 55%);
-  --accent-personal: hsl(150, 75%, 45%);
-  --accent-project: hsl(280, 80%, 60%);
+  --accent-work: hsl(210, 85%, 65%);
+  --accent-personal: hsl(150, 75%, 50%);
+  --accent-project: hsl(280, 80%, 65%);
 
   --danger: hsl(0, 85%, 60%);
   --success: hsl(150, 80%, 40%);
   --warning: hsl(35, 90%, 55%);
 
   /* Borders and Dividers */
-  --border-light: #333333;
+  --border-light: #2A2D32;
   --border-focus: var(--primary);
 
   /* Typography */
@@ -60,6 +61,7 @@
 body {
   font-family: var(--font-family);
   background-color: var(--bg-main);
+  background-image: none;
   color: var(--text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -107,11 +109,10 @@ select {
 
 /* Glassmorphism Utilities */
 .glass-panel {
-  background: rgba(20, 20, 26, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-lg);
 }
 
 /* Base App Layout */
@@ -159,7 +160,7 @@ select {
 
 .btn-primary {
   background-color: var(--primary);
-  color: white;
+  color: #000000;
   box-shadow: 0 4px 12px var(--primary-transparent);
 }
 
@@ -471,7 +472,7 @@ select {
   padding: 64px 24px;
   text-align: center;
   background-color: var(--bg-card);
-  border: 1px dashed var(--border-light);
+  border: 1px dashed rgba(111, 115, 123, 0.5);
   border-radius: var(--radius-lg);
 }
 
@@ -518,7 +519,7 @@ select {
 }
 
 .subtask-table th {
-  background-color: var(--bg-panel);
+  background-color: rgba(0, 0, 0, 0.25);
   color: var(--text-secondary);
   font-weight: 600;
   padding: 10px 12px;

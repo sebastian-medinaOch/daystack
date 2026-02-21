@@ -138,7 +138,7 @@ const FinanceDashboard = () => {
                             <button className="see-all-btn">See All</button>
                         </div>
                         <div className="transactions-list">
-                            {transactions.slice(0, 6).map((tx) => (
+                            {transactions.filter(t => t.type !== 'savings').slice(0, 6).map((tx) => (
                                 <div key={tx.id} className="transaction-item" onClick={() => handleOpenModal(tx)} style={{ cursor: 'pointer' }}>
                                     <div className="tx-icon">
                                         {getInitials(tx.name)}
@@ -221,7 +221,27 @@ const FinanceDashboard = () => {
                             </div>
                             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Saved across accounts</span>
                         </div>
-                        <button className="explore-btn" style={{ width: '100%' }} onClick={() => handleOpenModal(null, 'savings')}>Deposit Savings</button>
+
+                        <div className="savings-history" style={{ marginTop: '16px', marginBottom: '16px' }}>
+                            <div className="transactions-list" style={{ gap: '8px' }}>
+                                {transactions.filter(t => t.type === 'savings').slice(0, 3).map((tx) => (
+                                    <div key={tx.id} className="transaction-item" onClick={() => handleOpenModal(tx, 'savings')} style={{ cursor: 'pointer', padding: '4px 0' }}>
+                                        <div className="tx-details">
+                                            <div className="tx-name" style={{ fontSize: '0.85rem' }}>{tx.name}</div>
+                                            <div className="tx-category" style={{ fontSize: '0.65rem' }}>{new Date(tx.date).toLocaleDateString()}</div>
+                                        </div>
+                                        <div className={`tx-amount ${tx.amount > 0 ? 'positive' : 'negative'}`} style={{ fontSize: '0.85rem' }}>
+                                            {tx.amount > 0 ? '+' : ''}{formatCurrency(tx.amount)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="savings-actions" style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
+                            <button className="explore-btn" style={{ flex: 1, padding: '12px 8px', fontSize: '0.85rem' }} onClick={() => handleOpenModal(null, 'savings')}>Deposit</button>
+                            <button className="explore-btn" style={{ flex: 1, padding: '12px 8px', fontSize: '0.85rem', background: 'rgba(229, 62, 62, 0.1)', color: '#E53E3E' }} onClick={() => handleOpenModal(null, 'savings')}>Withdraw</button>
+                        </div>
                     </div>
 
                 </div>
