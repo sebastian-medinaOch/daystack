@@ -3,6 +3,7 @@ import { FinanceContext } from '../context/FinanceContext';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, RefreshCw, Send, Download, Plus, Search, Settings } from 'lucide-react';
 import FinanceTransactionModal from './FinanceTransactionModal';
+import FinanceMonthlyExpenseModal from './FinanceMonthlyExpenseModal';
 import './FinanceDashboard.css';
 
 const MOCK_BAR_DATA = [
@@ -32,6 +33,11 @@ const FinanceDashboard = () => {
     const {
         transactions,
         calculateTotalBalance,
+        calculateExpectedExpenses,
+        monthlyExpenses,
+        toggleMonthlyExpensePaid,
+        calculateTotalSavings,
+        getSavings,
         exchangeRate
     } = useContext(FinanceContext);
 
@@ -39,8 +45,13 @@ const FinanceDashboard = () => {
     const [amountToConvert, setAmountToConvert] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTx, setEditingTx] = useState(null);
+    const [defaultModalType, setDefaultModalType] = useState('expense');
+
+    const [isMonthlyModalOpen, setIsMonthlyModalOpen] = useState(false);
+    const [editingMonthlyExpense, setEditingMonthlyExpense] = useState(null);
 
     const totalBalance = calculateTotalBalance();
+    const totalExpectedExpenses = calculateExpectedExpenses();
 
     const handleConvert = () => {
         if (!amountToConvert) return '0.00';
@@ -62,9 +73,15 @@ const FinanceDashboard = () => {
         return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
     }
 
-    const handleOpenModal = (tx = null) => {
+    const handleOpenModal = (tx = null, defaultType = 'expense') => {
         setEditingTx(tx);
+        setDefaultModalType(defaultType);
         setIsModalOpen(true);
+    };
+
+    const handleOpenMonthlyModal = (expense = null) => {
+        setEditingMonthlyExpense(expense);
+        setIsMonthlyModalOpen(true);
     };
 
     return (
@@ -102,7 +119,13 @@ const FinanceDashboard = () => {
                     <div className="glass-card balance-card">
                         <h4>Total Balance</h4>
                         <div className="balance-amount">{formatCurrency(totalBalance)}</div>
-                        <div className="balance-actions">
+                        <div className="balance-expected" style={{ marginTop: '8px', padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px' }}>
+                            <span className="expected-label" style={{ fontWeight: 500 }}>Total a gastar mensual: </span>
+                            <span className="expected-value" style={{ fontSize: '1.2rem', color: '#F56565', fontWeight: 700 }}>
+                                {formatCurrency(totalExpectedExpenses)}
+                            </span>
+                        </div>
+                        <div className="balance-actions" style={{ marginTop: '16px' }}>
                             <button className="action-pill"><Send size={16} /> Send</button>
                             <button className="action-pill"><Download size={16} /> Receive</button>
                         </div>
@@ -186,31 +209,6 @@ const FinanceDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Currency Converter */}
-                    <div className="glass-card converter-card green-tint">
-                        <div className="converter-header">
-                            <h4>Currency Converter</h4>
-                            <button className="swap-btn" onClick={() => setCurrencyMode(prev => prev === 'EUR_TO_COP' ? 'COP_TO_EUR' : 'EUR_TO_COP')}>
-                                <RefreshCw size={14} />
-                            </button>
-                        </div>
-                        <p className="converter-subtitle">
-                            {currencyMode === 'EUR_TO_COP' ? 'EUR (€) to COP ($)' : 'COP ($) to EUR (€)'}
-                        </p>
-                        <div className="converter-input-group">
-                            <input
-                                type="number"
-                                value={amountToConvert}
-                                onChange={(e) => setAmountToConvert(e.target.value)}
-                                placeholder="Enter amount"
-                            />
-                            <span className="currency-symbol">{currencyMode === 'EUR_TO_COP' ? '€' : '$'}</span>
-                        </div>
-                        <div className="converter-result">
-                            <span>Result:</span>
-                            <strong>{handleConvert()}</strong>
-                        </div>
-                    </div>
 
                 </div>
 
@@ -241,26 +239,66 @@ const FinanceDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Credit Score Gauge (Mock component for aesthetics) */}
-                    <div className="glass-card score-card">
+                    {/* Monthly Expected Expenses Table */}
+                    <div className="glass-card monthly-expenses-card">
                         <div className="card-header">
-                            <h4>Credit Score</h4>
-                            <button className="see-all-btn">See More</button>
+                            <h4>Monthly Expected</h4>
+                            <button className="see-all-btn" onClick={() => handleOpenMonthlyModal()}>Add New</button>
                         </div>
-                        <div className="gauge-container">
-                            {/* SVG for a simple gauge */}
-                            <svg viewBox="0 0 100 50" className="gauge-svg">
-                                <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#E2E8F0" strokeWidth="8" strokeLinecap="round" />
-                                <path d="M 10 50 A 40 40 0 0 1 50 10" fill="none" stroke="#F56565" strokeWidth="8" strokeLinecap="round" />
-                                <path d="M 50 10 A 40 40 0 0 1 80 25" fill="none" stroke="#ED8936" strokeWidth="8" strokeLinecap="round" />
-                                <path d="M 80 25 A 40 40 0 0 1 90 50" fill="none" stroke="#48BB78" strokeWidth="8" strokeLinecap="round" />
-                            </svg>
-                            <div className="score-value">
-                                <h3>1620</h3>
-                                <span>Excellent</span>
+                        <div className="expected-table-container">
+                            <table className="expected-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th align="right">Amount</th>
+                                        <th align="center">Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {monthlyExpenses.map((expense) => (
+                                        <tr key={expense.id} className={expense.isPaid ? 'is-paid' : ''}>
+                                            <td style={{ cursor: 'pointer' }} onClick={() => handleOpenMonthlyModal(expense)}>
+                                                {expense.name}
+                                            </td>
+                                            <td align="right" style={{ cursor: 'pointer' }} onClick={() => handleOpenMonthlyModal(expense)}>
+                                                {formatCurrency(expense.amount)}
+                                            </td>
+                                            <td align="center">
+                                                <button
+                                                    className={`action-btn-sm ${expense.isPaid ? 'paid' : ''}`}
+                                                    onClick={() => toggleMonthlyExpensePaid(expense.id)}
+                                                    style={{
+                                                        padding: '4px 12px',
+                                                        borderRadius: '99px',
+                                                        border: '1px solid #E2E8F0',
+                                                        background: expense.isPaid ? 'rgba(56, 161, 105, 0.1)' : 'transparent',
+                                                        color: expense.isPaid ? '#38A169' : '#4A5568',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                >
+                                                    {expense.isPaid ? 'Paid' : 'Pay'}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* Total Savings Card */}
+                    <div className="glass-card savings-panel-card">
+                        <div className="card-header">
+                            <h4>Total Savings</h4>
+                            <button className="see-all-btn" onClick={() => handleOpenModal(null, 'savings')}>+ Add</button>
+                        </div>
+                        <div className="savings-content" style={{ textAlign: 'center', margin: '20px 0' }}>
+                            <div className="savings-amount" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2C5282' }}>
+                                {formatCurrency(calculateTotalSavings())}
                             </div>
+                            <span style={{ fontSize: '0.85rem', color: '#718096' }}>Saved across accounts</span>
                         </div>
-                        <button className="explore-btn">Explore Benefits</button>
+                        <button className="explore-btn" style={{ width: '100%' }} onClick={() => handleOpenModal(null, 'savings')}>Deposit Savings</button>
                     </div>
 
                 </div>
@@ -270,6 +308,14 @@ const FinanceDashboard = () => {
                 <FinanceTransactionModal
                     onClose={() => setIsModalOpen(false)}
                     transactionToEdit={editingTx}
+                    defaultType={defaultModalType}
+                />
+            )}
+
+            {isMonthlyModalOpen && (
+                <FinanceMonthlyExpenseModal
+                    onClose={() => setIsMonthlyModalOpen(false)}
+                    expenseToEdit={editingMonthlyExpense}
                 />
             )}
         </div>

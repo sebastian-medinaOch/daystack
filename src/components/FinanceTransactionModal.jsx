@@ -1,13 +1,14 @@
+
 import React, { useState, useContext, useEffect } from 'react';
 import { FinanceContext } from '../context/FinanceContext';
 import { X } from 'lucide-react';
 import './FinanceTransactionModal.css';
 
-const FinanceTransactionModal = ({ onClose, transactionToEdit }) => {
+const FinanceTransactionModal = ({ onClose, transactionToEdit, defaultType = 'expense' }) => {
     const { addTransaction, updateTransaction } = useContext(FinanceContext);
 
     const [formData, setFormData] = useState({
-        type: 'expense',
+        type: defaultType,
         amount: '',
         name: '',
         account: 'Unicaja',

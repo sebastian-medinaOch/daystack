@@ -476,6 +476,74 @@
     flex-direction: column;
 }
 
+/* Expected Expenses Table */
+.monthly-expenses-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.expected-table-container {
+    overflow-y: auto;
+    flex: 1;
+    max-height: 250px;
+}
+
+.expected-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.expected-table th {
+    text-align: left;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #E2E8F0;
+    color: #718096;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+}
+
+.expected-table th[align="right"] {
+    text-align: right;
+}
+
+.expected-table th[align="center"] {
+    text-align: center;
+}
+
+.expected-table td {
+    padding: 12px 0;
+    border-bottom: 1px solid #EDF2F7;
+    color: #2D3748;
+    font-weight: 500;
+}
+
+.expected-table tr.is-paid td {
+    color: #A0AEC0;
+    text-decoration: line-through;
+}
+
+.balance-expected {
+    font-size: 0.9rem;
+    color: #718096;
+    margin-top: -10px;
+}
+
+.balance-expected .expected-value {
+    color: #E53E3E;
+    font-weight: 600;
+}
+
+/* Savings Panel */
+.savings-panel-card {
+    background: linear-gradient(135deg, #EBF8FF, #BEE3F8);
+    display: flex;
+    flex-direction: column;
+}
+
 .gauge-container {
     position: relative;
     display: flex;
