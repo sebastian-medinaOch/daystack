@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { FinanceContext } from '../context/FinanceContext';
-import { RefreshCw, Send, Download, Plus, Search, Settings } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, RefreshCw, Send, Download, Plus, Search, Settings, ArrowRightLeft } from 'lucide-react';
 import FinanceTransactionModal from './FinanceTransactionModal';
 import FinanceMonthlyExpenseModal from './FinanceMonthlyExpenseModal';
 import './FinanceDashboard.css';
@@ -26,6 +26,22 @@ const FinanceDashboard = () => {
 
     const [isMonthlyModalOpen, setIsMonthlyModalOpen] = useState(false);
     const [editingMonthlyExpense, setEditingMonthlyExpense] = useState(null);
+
+    // Currency Converter State
+    const [eurAmount, setEurAmount] = useState('');
+    const [copAmount, setCopAmount] = useState('');
+
+    const handleEurChange = (e) => {
+        const value = e.target.value;
+        setEurAmount(value);
+        setCopAmount(value ? (parseFloat(value) * exchangeRate).toFixed(2) : '');
+    };
+
+    const handleCopChange = (e) => {
+        const value = e.target.value;
+        setCopAmount(value);
+        setEurAmount(value ? (parseFloat(value) / exchangeRate).toFixed(2) : '');
+    };
 
     const totalBalance = calculateTotalBalance();
     const totalExpectedExpenses = calculateExpectedExpenses();
@@ -104,31 +120,38 @@ const FinanceDashboard = () => {
                             </span>
                         </div>
                         <div className="balance-actions" style={{ marginTop: '16px' }}>
-                            <button className="action-pill"><Send size={16} /> Send</button>
-                            <button className="action-pill"><Download size={16} /> Receive</button>
+                            <button className="action-pill" onClick={() => handleOpenModal(null, 'income', true)}><Download size={16} /> Receive</button>
                         </div>
 
-                        <div className="cards-section">
-                            <h5>My cards</h5>
-                            <div className="cards-row">
-                                {/* Visual Representation of Accounts */}
-                                <div className="credit-card primary">
-                                    <div className="chip"></div>
-                                    <div className="card-details">
-                                        <span className="card-number">**** **** **** 4455</span>
-                                        <span className="card-name">Jack Walson</span>
-                                    </div>
+                        <div className="currency-converter-section" style={{ marginTop: '32px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                <h5>Quick Convert</h5>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>1 EUR = {exchangeRate} COP</span>
+                            </div>
+                            <div className="converter-inputs" style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '16px' }}>
+                                <div className="input-group" style={{ flex: 1 }}>
+                                    <label style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>EUR (€)</label>
+                                    <input
+                                        type="number"
+                                        value={eurAmount}
+                                        onChange={handleEurChange}
+                                        placeholder="0.00"
+                                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '1.2rem', fontWeight: 600, outline: 'none' }}
+                                    />
                                 </div>
-                                <div className="credit-card secondary">
-                                    <div className="card-type">VISA</div>
-                                    <div className="card-details">
-                                        <span className="card-number">**** 1599</span>
-                                        <span className="card-name">Jack Walson</span>
-                                    </div>
+                                <div className="converter-icon" style={{ color: 'var(--text-secondary)', padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}>
+                                    <ArrowRightLeft size={16} />
                                 </div>
-                                <button className="add-card-btn">
-                                    <Plus />
-                                </button>
+                                <div className="input-group" style={{ flex: 1, textAlign: 'right' }}>
+                                    <label style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>COP ($)</label>
+                                    <input
+                                        type="number"
+                                        value={copAmount}
+                                        onChange={handleCopChange}
+                                        placeholder="0"
+                                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '1.2rem', fontWeight: 600, outline: 'none', textAlign: 'right' }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
