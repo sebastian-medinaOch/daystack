@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { FinanceContext } from '../context/FinanceContext';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, RefreshCw, Send, Download, Plus, Search, Settings } from 'lucide-react';
+import FinanceTransactionModal from './FinanceTransactionModal';
 import './FinanceDashboard.css';
 
 const MOCK_BAR_DATA = [
@@ -36,6 +37,8 @@ const FinanceDashboard = () => {
 
     const [currencyMode, setCurrencyMode] = useState('EUR_TO_COP'); // 'EUR_TO_COP' or 'COP_TO_EUR'
     const [amountToConvert, setAmountToConvert] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingTx, setEditingTx] = useState(null);
 
     const totalBalance = calculateTotalBalance();
 
@@ -59,6 +62,11 @@ const FinanceDashboard = () => {
         return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
     }
 
+    const handleOpenModal = (tx = null) => {
+        setEditingTx(tx);
+        setIsModalOpen(true);
+    };
+
     return (
         <div className="finance-dashboard animate-fade-in">
             {/* Header Area */}
@@ -69,9 +77,7 @@ const FinanceDashboard = () => {
                     <nav className="finance-nav">
                         <button className="nav-btn active">All</button>
                         <button className="nav-btn">Transactions</button>
-                        <button className="nav-btn">Analytic</button>
-                        <button className="nav-btn">Expenses</button>
-                        <button className="nav-btn">Spending</button>
+                        <button className="nav-btn" onClick={() => handleOpenModal()}>+ New Record</button>
                     </nav>
                 </div>
 
@@ -219,13 +225,13 @@ const FinanceDashboard = () => {
                         </div>
                         <div className="transactions-list">
                             {transactions.slice(0, 6).map((tx) => (
-                                <div key={tx.id} className="transaction-item">
+                                <div key={tx.id} className="transaction-item" onClick={() => handleOpenModal(tx)} style={{ cursor: 'pointer' }}>
                                     <div className="tx-icon">
                                         {getInitials(tx.name)}
                                     </div>
                                     <div className="tx-details">
                                         <div className="tx-name">{tx.name}</div>
-                                        <div className="tx-date">{new Date(tx.date).toLocaleDateString()}</div>
+                                        <div className="tx-category">{tx.category || 'Savings'} • {new Date(tx.date).toLocaleDateString()}</div>
                                     </div>
                                     <div className={`tx-amount ${tx.amount > 0 ? 'positive' : 'negative'}`}>
                                         {tx.amount > 0 ? '+' : ''}{formatCurrency(tx.amount)}
@@ -259,6 +265,13 @@ const FinanceDashboard = () => {
 
                 </div>
             </div>
+
+            {isModalOpen && (
+                <FinanceTransactionModal
+                    onClose={() => setIsModalOpen(false)}
+                    transactionToEdit={editingTx}
+                />
+            )}
         </div>
     );
 };
