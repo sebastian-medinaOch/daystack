@@ -1,10 +1,8 @@
 .finance-dashboard {
     padding: 24px;
     min-height: 100vh;
-    background-color: #F0F4F8;
-    /* Soft light blue/grey background like the screenshot */
-    color: #1A202C;
-    /* Dark text for readability */
+    background-color: transparent;
+    color: var(--text-primary);
     border-radius: 24px;
     overflow: hidden;
     font-family: var(--font-family);
@@ -57,6 +55,7 @@
     border: none;
     font-size: 0.9rem;
     color: #718096;
+    /* Darker gray for contrast on white */
     font-weight: 500;
     cursor: pointer;
     padding: 4px 12px;
@@ -65,11 +64,12 @@
 }
 
 .nav-btn:hover {
-    color: #2D3748;
+    color: #1A202C;
+    /* Darkest for contrast */
 }
 
 .nav-btn.active {
-    color: #2D3748;
+    color: #1A202C;
     font-weight: 600;
 }
 
@@ -87,6 +87,8 @@
     border-radius: 99px;
     gap: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    color: #4A5568;
+    /* Icon color */
 }
 
 .search-bar input {
@@ -95,13 +97,16 @@
     background: transparent;
     font-size: 0.9rem;
     width: 200px;
+    color: #1A202C;
+    /* Black text on white background */
 }
 
 .icon-btn {
     background: transparent;
     border: none;
     cursor: pointer;
-    color: #4A5568;
+    color: var(--text-secondary);
+    /* Text secondary for dark themes */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,7 +117,8 @@
 }
 
 .icon-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
 }
 
 .user-avatar img {
@@ -125,16 +131,16 @@
 /* Grid Layout */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1.2fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 24px;
 }
 
 /* Shared Card Styles */
 .glass-card {
-    background: white;
+    background: var(--bg-panel);
     border-radius: 20px;
     padding: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-light);
     margin-bottom: 24px;
 }
 
@@ -163,7 +169,7 @@
 
 .see-all-btn {
     font-size: 0.8rem;
-    color: #718096;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
@@ -174,7 +180,7 @@
 }
 
 .balance-card h4 {
-    color: #718096;
+    color: var(--text-secondary);
     font-weight: 500;
     font-size: 1rem;
     margin-bottom: 8px;
@@ -202,7 +208,8 @@
     padding: 8px 24px;
     border-radius: 99px;
     font-weight: 500;
-    color: #4A5568;
+    color: #1A202C;
+    /* Dark text for contrast on white/gray button */
     transition: all 0.2s;
 }
 
@@ -235,12 +242,12 @@
 
 .credit-card.primary {
     background: linear-gradient(135deg, #A7C5EB, #D6C2F7);
-    color: #2D3748;
+    color: var(--text-primary);
 }
 
 .credit-card.secondary {
     background: linear-gradient(135deg, #B5E0D5, #E1EFD8);
-    color: #2D3748;
+    color: var(--text-primary);
 }
 
 .add-card-btn {
@@ -287,49 +294,11 @@
     opacity: 0.8;
 }
 
-/* Expenses Graph Chart */
-.expenses-graph-card {
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-}
 
-.chart-container {
-    flex: 1;
-    min-height: 0;
-    margin-top: 10px;
-}
-
-.chart-x-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    color: #A0AEC0;
-    font-size: 0.7rem;
-}
-
-.chart-x-labels.small span {
-    font-size: 0.65rem;
-}
-
-/* Spending Card */
-.spending-card {
-    background: linear-gradient(180deg, #EDF2FF, white);
-    height: 250px;
-    display: flex;
-    flex-direction: column;
-}
-
-.spending-total {
-    font-size: 1.25rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 20px;
-}
 
 /* Converter Card */
 .converter-card {
-    background: linear-gradient(135deg, #E6FFFA, #D1F2EB);
+    background: var(--bg-panel);
     height: 250px;
     display: flex;
     flex-direction: column;
@@ -377,7 +346,7 @@
     flex: 1;
     font-size: 1.2rem;
     font-weight: 600;
-    color: #2D3748;
+    color: var(--text-primary);
 }
 
 .currency-symbol {
@@ -397,17 +366,17 @@
 }
 
 .converter-result span {
-    color: #718096;
+    color: var(--text-secondary);
 }
 
 .converter-result strong {
     font-size: 1.2rem;
-    color: #2D3748;
+    color: var(--text-primary);
 }
 
 /* Transactions Card */
 .transactions-card {
-    background: linear-gradient(180deg, #E6FFFA, white);
+    background: var(--bg-panel);
 }
 
 .transactions-list {
@@ -436,7 +405,8 @@
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    color: #4A5568;
+    color: #1A202C;
+    /* Ensure high contrast */
     margin-right: 16px;
     border: 1px solid #E2E8F0;
 }
@@ -467,7 +437,7 @@
 }
 
 .tx-amount.negative {
-    color: #2D3748;
+    color: var(--text-primary);
 }
 
 /* Credit Score Gauge */
@@ -498,7 +468,7 @@
     text-align: left;
     padding-bottom: 12px;
     border-bottom: 2px solid #E2E8F0;
-    color: #718096;
+    color: var(--text-secondary);
     font-weight: 600;
     position: sticky;
     top: 0;
@@ -517,7 +487,7 @@
 .expected-table td {
     padding: 12px 0;
     border-bottom: 1px solid #EDF2F7;
-    color: #2D3748;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
@@ -528,7 +498,7 @@
 
 .balance-expected {
     font-size: 0.9rem;
-    color: #718096;
+    color: var(--text-secondary);
     margin-top: -10px;
 }
 
@@ -539,7 +509,7 @@
 
 /* Savings Panel */
 .savings-panel-card {
-    background: linear-gradient(135deg, #EBF8FF, #BEE3F8);
+    background: var(--bg-panel);
     display: flex;
     flex-direction: column;
 }
@@ -568,7 +538,7 @@
 .score-value h3 {
     font-size: 2rem;
     margin: 0;
-    color: #2D3748;
+    color: var(--text-primary);
 }
 
 .score-value span {
