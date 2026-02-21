@@ -3,53 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const FinanceContext = createContext();
 
-const initialTransactions = [
-    { id: uuidv4(), name: 'Servicios del piso', amount: -220, account: 'Unicaja', category: 'Casa', date: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Internet', amount: -35, account: 'Unicaja', category: 'Casa', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Mercado', amount: -250, account: 'Unicaja', category: 'Casa', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Seguro BBVA', amount: -10, account: 'Unicaja', category: 'Gastos Personales', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Cross y gym', amount: -120, account: 'Unicaja', category: 'Gastos Personales', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Peluqueria', amount: -35, account: 'Unicaja', category: 'Gastos Personales', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Gastos extras', amount: -200, account: 'Unicaja', category: 'Gastos Personales', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Pago iCloud', amount: -2.99, account: 'Unicaja', category: 'Gastos Personales', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Spotify', amount: -11, account: 'Unicaja', category: 'Gastos Personales', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Servicios casa mamá', amount: -5.40, account: 'Davivienda', category: 'Gastos Personales', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Pago de la gata', amount: -45, account: 'Davivienda', category: 'Gastos Personales', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Soe Store', amount: -54, account: 'Unicaja', category: 'Gastos inversiones', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Deudas', amount: -204, account: 'Unicaja', category: 'Gastos inversiones', date: new Date().toISOString(), type: 'expense' },
-    { id: uuidv4(), name: 'Ahorro Viaje a Colombia', amount: -300, account: 'Unicaja', category: 'Ahorros', date: new Date().toISOString(), type: 'savings' },
-    { id: uuidv4(), name: 'Ahorro Coche', amount: -300, account: 'Unicaja', category: 'Ahorros', date: new Date().toISOString(), type: 'savings' },
-    { id: uuidv4(), name: 'Ahorro Emergencia', amount: -200, account: 'Unicaja', category: 'Ahorros', date: new Date().toISOString(), type: 'savings' },
-    { id: uuidv4(), name: 'Ahorro Inversion', amount: 100, account: 'Unicaja', category: 'Ahorros', date: new Date().toISOString(), type: 'savings' },
-    { id: uuidv4(), name: 'Ahorro Extra', amount: 280, account: 'BBVA', category: 'Ahorros', date: new Date().toISOString(), type: 'savings' },
-    { id: uuidv4(), name: 'Salario', amount: 3500, account: 'Unicaja', category: 'Ingresos', date: new Date(new Date().setDate(5)).toISOString(), type: 'income' },
-];
+const initialTransactions = [];
 
-const initialMonthlyExpenses = [
-    { id: uuidv4(), name: 'Arriendo', amount: 600, isPaid: false },
-    { id: uuidv4(), name: 'Servicios del piso', amount: 220, isPaid: false },
-    { id: uuidv4(), name: 'Internet', amount: 35, isPaid: false },
-    { id: uuidv4(), name: 'Mercado', amount: 250, isPaid: false },
-    { id: uuidv4(), name: 'Seguro BBVA', amount: 10, isPaid: false },
-    { id: uuidv4(), name: 'Datos', amount: 15, isPaid: false },
-    { id: uuidv4(), name: 'Cross y gym', amount: 120, isPaid: false },
-    { id: uuidv4(), name: 'Peluqueadas', amount: 35, isPaid: false },
-    { id: uuidv4(), name: 'Gastos extras', amount: 200, isPaid: false },
-    { id: uuidv4(), name: 'Pago Icloud', amount: 2.99, isPaid: false },
-    { id: uuidv4(), name: 'Spotify', amount: 11, isPaid: false },
-    { id: uuidv4(), name: 'HBO', amount: 7, isPaid: false },
-    { id: uuidv4(), name: 'Google', amount: 1.80, isPaid: false },
-    { id: uuidv4(), name: 'Servicios casa mama', amount: 5.40, isPaid: false },
-    { id: uuidv4(), name: 'Pago de la gata', amount: 45, isPaid: false },
-    { id: uuidv4(), name: 'Soe Store', amount: 54, isPaid: false },
-    { id: uuidv4(), name: 'Deudas', amount: 204, isPaid: false },
-    { id: uuidv4(), name: 'Comodín', amount: 100, isPaid: false },
-    { id: uuidv4(), name: 'Ahorro Viaje a Colombia', amount: 300, isPaid: false },
-    { id: uuidv4(), name: 'Ahorro Coche', amount: 300, isPaid: false },
-    { id: uuidv4(), name: 'Ahorro Emergencia', amount: 200, isPaid: false },
-    { id: uuidv4(), name: 'Ahorro Inversion', amount: 100, isPaid: false },
-    { id: uuidv4(), name: 'Ahorro Extra', amount: 280, isPaid: false },
-];
+const initialMonthlyExpenses = [];
 
 export const FinanceProvider = ({ children }) => {
     const [transactions, setTransactions] = useState(() => {
