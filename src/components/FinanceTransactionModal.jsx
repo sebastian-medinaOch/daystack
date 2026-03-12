@@ -54,7 +54,7 @@ const FinanceTransactionModal = ({ onClose, transactionToEdit, defaultType = 'ex
 
         const transactionData = {
             ...formData,
-            amount: finalAmount,
+            amount: Math.round(finalAmount * 100) / 100,
             date: new Date(formData.date).toISOString()
         };
 

@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { FinanceContext } from '../context/FinanceContext';
-import { ArrowUpRight, ArrowDownRight, RefreshCw, Send, Download, Plus, Search, Settings, ArrowRightLeft } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, RefreshCw, Send, Download, Plus, Search, Settings, ArrowRightLeft, ChevronDown, ArrowDown } from 'lucide-react';
 import FinanceTransactionModal from './FinanceTransactionModal';
 import FinanceMonthlyExpenseModal from './FinanceMonthlyExpenseModal';
+import FinanceTransferModal from './FinanceTransferModal';
 import './FinanceDashboard.css';
 
 const FinanceDashboard = () => {
@@ -18,6 +19,7 @@ const FinanceDashboard = () => {
     } = useContext(FinanceContext);
 
     const [currencyMode, setCurrencyMode] = useState('EUR_TO_COP'); // 'EUR_TO_COP' or 'COP_TO_EUR'
+    const [showConverter, setShowConverter] = useState(false);
     const [amountToConvert, setAmountToConvert] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTx, setEditingTx] = useState(null);
@@ -26,6 +28,14 @@ const FinanceDashboard = () => {
 
     const [isMonthlyModalOpen, setIsMonthlyModalOpen] = useState(false);
     const [editingMonthlyExpense, setEditingMonthlyExpense] = useState(null);
+
+    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+    const [transferDirection, setTransferDirection] = useState('balance_to_savings');
+
+    const handleOpenTransferModal = (direction) => {
+        setTransferDirection(direction);
+        setIsTransferModalOpen(true);
+    };
 
     // Currency Converter State
     const [eurAmount, setEurAmount] = useState('');
@@ -41,6 +51,14 @@ const FinanceDashboard = () => {
         const value = e.target.value;
         setCopAmount(value);
         setEurAmount(value ? (parseFloat(value) / exchangeRate).toFixed(2) : '');
+    };
+
+    const handleSwapCurrency = () => {
+        setCurrencyMode(prev => prev === 'EUR_TO_COP' ? 'COP_TO_EUR' : 'EUR_TO_COP');
+        // Optionally swap amounts when mode changes
+        const tempEur = eurAmount;
+        setEurAmount(copAmount);
+        setCopAmount(tempEur);
     };
 
     const totalBalance = calculateTotalBalance();
@@ -89,6 +107,17 @@ const FinanceDashboard = () => {
                         <button className="nav-btn active">All</button>
                         <button className="nav-btn">Transactions</button>
                         <button className="nav-btn" onClick={() => handleOpenModal()}>+ New Record</button>
+                        <button 
+                            className="nav-btn" 
+                            style={{ color: '#E53E3E', background: 'rgba(229, 62, 62, 0.1)', border: '1px solid rgba(229, 62, 62, 0.2)', display: 'flex', alignItems: 'center', gap: '6px', marginLeft: '8px' }}
+                            onClick={() => {
+                                if(window.confirm('Are you sure you want to delete all your history and reset the app to zero? This action cannot be undone.')) {
+                                    resetData();
+                                }
+                            }}
+                        >
+                            <Trash2 size={14} /> Reset App
+                        </button>
                     </nav>
                 </div>
 
@@ -119,40 +148,88 @@ const FinanceDashboard = () => {
                                 {formatCurrency(totalExpectedExpenses)}
                             </span>
                         </div>
-                        <div className="balance-actions" style={{ marginTop: '16px' }}>
+                        <div className="balance-actions" style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
                             <button className="action-pill" onClick={() => handleOpenModal(null, 'income', true)}><Download size={16} /> Receive</button>
+                            <button className="action-pill" onClick={() => handleOpenTransferModal('balance_to_savings')} style={{ background: 'rgba(139, 92, 246, 0.15)', color: 'var(--primary)', borderColor: 'rgba(139, 92, 246, 0.3)' }}><Send size={16} /> Send to Savings</button>
                         </div>
 
                         <div className="currency-converter-section" style={{ marginTop: '32px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                                <h5>Quick Convert</h5>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>1 EUR = {exchangeRate} COP</span>
-                            </div>
-                            <div className="converter-inputs" style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '16px' }}>
-                                <div className="input-group" style={{ flex: 1 }}>
-                                    <label style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>EUR (€)</label>
-                                    <input
-                                        type="number"
-                                        value={eurAmount}
-                                        onChange={handleEurChange}
-                                        placeholder="0.00"
-                                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '1.2rem', fontWeight: 600, outline: 'none' }}
-                                    />
-                                </div>
-                                <div className="converter-icon" style={{ color: 'var(--text-secondary)', padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}>
-                                    <ArrowRightLeft size={16} />
-                                </div>
-                                <div className="input-group" style={{ flex: 1, textAlign: 'right' }}>
-                                    <label style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>COP ($)</label>
-                                    <input
-                                        type="number"
-                                        value={copAmount}
-                                        onChange={handleCopChange}
-                                        placeholder="0"
-                                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '1.2rem', fontWeight: 600, outline: 'none', textAlign: 'right' }}
-                                    />
+                                <h5 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>Quick Convert</h5>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    {showConverter && <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>1 EUR = {exchangeRate} COP</span>}
+                                    <button 
+                                        onClick={() => setShowConverter(!showConverter)} 
+                                        className="action-pill" 
+                                        style={{ padding: '6px 16px', fontSize: '0.8rem', margin: 0, cursor: 'pointer' }}
+                                    >
+                                        {showConverter ? 'Hide' : 'Open'}
+                                    </button>
                                 </div>
                             </div>
+
+                            {showConverter && (
+                                <div className="converter-card-vertical" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                {/* You Send Block */}
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '16px' }}>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>You send</div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '6px 12px 6px 6px', borderRadius: '20px', cursor: 'pointer' }}>
+                                            <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: currencyMode === 'EUR_TO_COP' ? '#0D8ABC' : '#8B5CF6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '12px', fontWeight: 'bold' }}>
+                                                {currencyMode === 'EUR_TO_COP' ? '€' : '$'}
+                                            </div>
+                                            <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>
+                                                {currencyMode === 'EUR_TO_COP' ? 'EUR' : 'COP'}
+                                            </span>
+                                            <ChevronDown size={14} color="var(--text-secondary)" />
+                                        </div>
+                                        <input
+                                            type="number"
+                                            value={currencyMode === 'EUR_TO_COP' ? eurAmount : copAmount}
+                                            onChange={currencyMode === 'EUR_TO_COP' ? handleEurChange : handleCopChange}
+                                            placeholder="0.00"
+                                            style={{ width: '50%', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 700, outline: 'none', textAlign: 'right', fontFamily: 'var(--font-heading)' }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Arrow Middle */}
+                                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '-14px', marginBottom: '-14px', position: 'relative', zIndex: 2 }}>
+                                    <div 
+                                        onClick={handleSwapCurrency}
+                                        style={{ background: 'var(--bg-panel)', border: '4px solid rgba(0,0,0,0.1)', borderRadius: '50%', width: '30px', height: '30px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', transition: 'transform 0.2s' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                    >
+                                        <ArrowDown size={14} />
+                                    </div>
+                                </div>
+
+                                {/* You Get Block */}
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '16px' }}>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>You get</div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '6px 12px 6px 6px', borderRadius: '20px', cursor: 'pointer' }}>
+                                            <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: currencyMode === 'EUR_TO_COP' ? '#8B5CF6' : '#0D8ABC', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '12px', fontWeight: 'bold' }}>
+                                                {currencyMode === 'EUR_TO_COP' ? '$' : '€'}
+                                            </div>
+                                            <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>
+                                                {currencyMode === 'EUR_TO_COP' ? 'COP' : 'EUR'}
+                                            </span>
+                                            <ChevronDown size={14} color="var(--text-secondary)" />
+                                        </div>
+                                        <input
+                                            type="number"
+                                            value={currencyMode === 'EUR_TO_COP' ? copAmount : eurAmount}
+                                            onChange={currencyMode === 'EUR_TO_COP' ? handleCopChange : handleEurChange}
+                                            placeholder="0.00"
+                                            style={{ width: '50%', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 700, outline: 'none', textAlign: 'right', fontFamily: 'var(--font-heading)' }}
+                                            readOnly={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            )}
                         </div>
                     </div>
 
@@ -265,7 +342,7 @@ const FinanceDashboard = () => {
 
                         <div className="savings-actions" style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
                             <button className="explore-btn" style={{ flex: 1, padding: '12px 8px', fontSize: '0.85rem' }} onClick={() => handleOpenModal(null, 'savings', true)}>Deposit</button>
-                            <button className="explore-btn" style={{ flex: 1, padding: '12px 8px', fontSize: '0.85rem', background: 'rgba(229, 62, 62, 0.1)', color: '#E53E3E' }} onClick={() => handleOpenModal(null, 'savings', true)}>Withdraw</button>
+                            <button className="explore-btn" style={{ flex: 1, padding: '12px 8px', fontSize: '0.85rem', background: 'rgba(229, 62, 62, 0.1)', color: '#E53E3E' }} onClick={() => handleOpenTransferModal('savings_to_balance')}>Withdraw to Balance</button>
                         </div>
                     </div>
 
@@ -285,6 +362,13 @@ const FinanceDashboard = () => {
                 <FinanceMonthlyExpenseModal
                     onClose={() => setIsMonthlyModalOpen(false)}
                     expenseToEdit={editingMonthlyExpense}
+                />
+            )}
+
+            {isTransferModalOpen && (
+                <FinanceTransferModal
+                    onClose={() => setIsTransferModalOpen(false)}
+                    direction={transferDirection}
                 />
             )}
         </div>
